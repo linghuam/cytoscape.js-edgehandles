@@ -54,6 +54,7 @@
     "cytoscape": "^3.2.0"
   },
   "dependencies": {
+    "d3-quadtree": "^1.0.7",
     "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1"
   }

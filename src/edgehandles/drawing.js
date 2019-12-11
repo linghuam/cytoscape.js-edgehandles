@@ -178,9 +178,9 @@ function removeHandle(){
   return this;
 }
 
-function setHandleFor( node ){
+function setHandleFor( node, position ){
   let { options, cy } = this;
-
+  /*
   let handlePosition = typeof options.handlePosition === typeof '' ? () => options.handlePosition : options.handlePosition;
 
   let p = node.position();
@@ -211,7 +211,8 @@ function setHandleFor( node ){
   let hx = this.hx = p.x + moveX;
   let hy = this.hy = p.y + moveY;
   let pos = { x: hx, y: hy };
-
+*/
+  let pos = position;
   if( this.handleShown() ){
     this.handleNode.position( pos );
   } else {

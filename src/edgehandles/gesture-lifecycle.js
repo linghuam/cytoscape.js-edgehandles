@@ -1,5 +1,6 @@
 const memoize = require('lodash.memoize');
 const sqrt2 = Math.sqrt(2);
+const quadtree = require('d3-quadtree').quadtree;
 
 function canStartOn( node ){
   const { options, previewEles, ghostEles, handleNode } = this;
@@ -25,14 +26,14 @@ function canStartNonDrawModeOn( node ){
   return this.canStartOn( node ) && !this.drawMode;
 }
 
-function show( node ){
+function show( node , position){
   let { options, drawMode } = this;
 
   if( !this.canStartOn(node) || ( drawMode && !options.handleInDrawMode ) ){ return; }
 
   this.sourceNode = node;
 
-  this.setHandleFor( node );
+  this.setHandleFor( node , position);
 
   this.emit( 'show', this.hp(), this.sourceNode );
 
@@ -70,9 +71,29 @@ function update( pos ){
   this.my = p.y;
 
   this.updateEdge();
-  this.throttledSnap();
+  // this.throttledSnap();
 
   return this;
+}
+
+function getClickNode(e) {
+  let { options, cy } = this;
+  const pos = e.position;
+  const extent = cy.extent();
+  const points = cy.$(options.handleNodes).map(e => ({
+    position: e.position(),
+    id: e.id()
+  }));
+  const qtree = quadtree()
+  .x(d => d.position.x)
+  .y(d => d.position.y)
+  .extent([extent.x1, extent.y1], [extent.x2, extent.y2])
+  .addAll(points);
+
+  const res = qtree.find(pos.x, pos.y, options.snapThreshold);
+  if (res) {
+    return cy.$id(res.id);
+  }
 }
 
 function snap(){
@@ -267,7 +288,7 @@ function unpreview( target ) {
 
 function stop(){
   if( !this.active ){ return; }
-
+  // presumptiveTargets 表示推定的节点， ghostEles 表示临时的边和点
   let { sourceNode, targetNode, ghostEles, presumptiveTargets } = this;
 
   clearTimeout( this.previewTimeout );
@@ -296,5 +317,5 @@ function stop(){
 
 module.exports = {
   show, hide, start, update, preview, unpreview, stop, snap,
-  canStartOn, canStartDrawModeOn, canStartNonDrawModeOn
+  canStartOn, canStartDrawModeOn, canStartNonDrawModeOn, getClickNode
 };

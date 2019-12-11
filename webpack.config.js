@@ -23,18 +23,18 @@ let config = {
     ]
   },
   externals: {
-    'lodash.memoize': {
-      commonjs: 'lodash.memoize',
-      commonjs2: 'lodash.memoize',
-      amd: 'lodash.memoize',
-      root: ['_', 'memoize']
-    },
-    'lodash.throttle': {
-      commonjs: 'lodash.throttle',
-      commonjs2: 'lodash.throttle',
-      amd: 'lodash.throttle',
-      root: ['_', 'throttle']
-    }
+    // 'lodash.memoize': {
+    //   commonjs: 'lodash.memoize',
+    //   commonjs2: 'lodash.memoize',
+    //   amd: 'lodash.memoize',
+    //   root: ['_', 'memoize']
+    // },
+    // 'lodash.throttle': {
+    //   commonjs: 'lodash.throttle',
+    //   commonjs2: 'lodash.throttle',
+    //   amd: 'lodash.throttle',
+    //   root: ['_', 'throttle']
+    // }
   },
   plugins: MIN ? [
     new webpack.optimize.UglifyJsPlugin({

@@ -116,21 +116,23 @@ function makeEdges( preview = false ) {
 
     added = added.merge( interNode ).merge( source2inter ).merge( inter2target );
   } else { // flat
-    let source2target = cy.add(
-      getEleJson(
-        {
-          group: 'edges',
-          data: {
-            source: source.id(),
-            target: target.id()
-          }
-        },
-        options.edgeParams( source, target, 0 ),
-        classes
-      )
-    );
+    // classes += ' ';
+    // classes += `line_type_${cy.data('currentLineType')}`;
+    // let source2target = cy.add(
+    //   getEleJson(
+    //     {
+    //       group: 'edges',
+    //       data: {
+    //         source: source.id(),
+    //         target: target.id()
+    //       }
+    //     },
+    //     options.edgeParams( source, target, 0 ),
+    //     classes
+    //   )
+    // );
 
-    added = added.merge( source2target );
+    // added = added.merge( source2target );
   }
 
   if( preview ) {
@@ -266,7 +268,7 @@ function updateEdge() {
           source: sourceNode.id(),
           target: ghostNode.id()
         }),
-        classes: 'eh-ghost eh-ghost-edge'
+        classes: 'eh-ghost eh-ghost-edge' + ' ' + `line_type_${cy.data('currentLineType')}`
       }) );
 
       ghostEdge.style({

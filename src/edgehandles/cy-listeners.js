@@ -1,3 +1,4 @@
+const throttle = require('lodash.throttle');
 function addCytoscapeListeners(){
   let { cy, options } = this;
 
@@ -25,10 +26,28 @@ function addCytoscapeListeners(){
   //     this.hide();
   //   }
   // } );
+  
+  this.addListener( cy, 'mousemove', throttle(function(e) {
+    if (e.target !== cy || this.active || this.grabbingNode) {
+      this.hide();
+      return;
+    }
+    let node = this.getClickNode(e);
+    if (node) {
+      if( !this.canStartOn(node) || ( this.drawMode && !options.handleInDrawMode ) ){ 
+        this.hide();
+        return; 
+      }
+      this.show( node, e.position );
+    } else {
+      this.hide();
+    }
+  }.bind(this), options.hoverDelay));
 
   // start on tapstart handle
   // start on tapstart node (draw mode)
   // toggle on source node
+  // 鼠标点下触发，click
   this.addListener( cy, 'tapstart', e => {
     let node = e.target;
 
@@ -39,25 +58,30 @@ function addCytoscapeListeners(){
     // } else if( node.same( this.sourceNode ) ){
     //   this.hide();
     // }
-
-    if (node === cy) {
-      // 点击空白
-      let clickNode = this.getClickNode(e);
-      if (clickNode) {
-        if( !this.canStartOn(clickNode) || ( this.drawMode && !options.handleInDrawMode ) ){ return; }
-        this.start(clickNode);
-        // console.log('clickNode', clickNode);
-        // this.show(clickNode, e.position);
-        // if (this.sourceNode) {
-        //   // this.hide();
-        //   this.start(this.sourceNode);
-        // }
-        // this.start(clickNode);
-      }
+      
+    if (this.handleShown() && this.handleNode.length && this.sourceNode.length) {
+      this.hide();
+      this.start(this.sourceNode);
     }
+    // if (node === cy) {
+    //   // 点击空白
+    //   let clickNode = this.getClickNode(e);
+    //   if (clickNode) {
+    //     if( !this.canStartOn(clickNode) || ( this.drawMode && !options.handleInDrawMode ) ){ return; }
+    //     this.start(clickNode);
+    //     // console.log('clickNode', clickNode);
+    //     // this.show(clickNode, e.position);
+    //     // if (this.sourceNode) {
+    //     //   // this.hide();
+    //     //   this.start(this.sourceNode);
+    //     // }
+    //     // this.start(clickNode);
+    //   }
+    // }
   } );
 
   // update line on drag
+  // 鼠标移动触发，mousemove
   this.addListener( cy, 'tapdrag', e => {
     this.update( e.position );
   } );
@@ -81,6 +105,7 @@ function addCytoscapeListeners(){
   // } );
 
   // stop gesture on tapend
+  // 每次鼠标抬起触发，mouseup
   this.addListener( cy, 'tapend', e => {
     if (this.active && e.target !== this.cy && e.target.isNode()) {
       this.targetNode = e.target;

@@ -269,7 +269,8 @@ function updateEdge() {
           source: sourceNode.id(),
           target: ghostNode.id()
         }),
-        classes: 'eh-ghost eh-ghost-edge' + ' ' + `line_type_${cy.data('currentLineType')}`
+        // classes:  'eh-ghost eh-ghost-edge' + ' ' + `line_type_${cy.data('currentLineType')}`
+        classes: ghostEdgeParams.classes ? ghostEdgeParams.classes + ' eh-ghost eh-ghost-edge' : 'eh-ghost eh-ghost-edge'
       }) );
 
       ghostEdge.style({
